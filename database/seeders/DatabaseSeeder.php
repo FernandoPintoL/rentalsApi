@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             AccionControlsContratoSeeder::class,
             TipoClienteSeeder::class,
             TipoInmuebleSeeder::class,
+            MenuSeeder::class,
         ]);
     }
 }

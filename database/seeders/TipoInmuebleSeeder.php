@@ -83,11 +83,6 @@ class TipoInmuebleSeeder extends Seeder
                 'nombre' => 'Almacen',
                 'created_at' => date_create('now')->format('Y-m-d H:i:s'),
                 'updated_at' => date_create('now')->format('Y-m-d H:i:s')
-            ],
-            [
-                'nombre' => 'Oficina',
-                'created_at' => date_create('now')->format('Y-m-d H:i:s'),
-                'updated_at' => date_create('now')->format('Y-m-d H:i:s')
             ]
         ];
         \DB::table('tipo_inmuebles')->insert($tipoInmuebles);
