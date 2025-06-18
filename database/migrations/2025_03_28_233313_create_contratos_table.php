@@ -22,6 +22,7 @@ return new class extends Migration
             $table->double('monto')->default(0);
             $table->string('blockchain_id')->default('');
             $table->string('detalle')->default('');
+            $table->boolean('estado')->default(1);
             $table->timestamps();
             $table->foreign('inmueble_id')->references('id')->on('inmuebles')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('propietario_id')->references('id')->on('propietarios')->onDelete('cascade')->onUpdate('cascade');
