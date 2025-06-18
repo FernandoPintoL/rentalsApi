@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import PropietarioContract from './../../../../blockchain/build/contracts/PropietarioContract.json';
+import PropietarioContract from './PropietarioContract.json';
 
 
 let web3;
