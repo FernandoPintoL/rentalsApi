@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('tipo_usuario', ['propietario', 'cliente'])->default('cliente');
-            $table->enum('tipo_cliente', ['visitante', 'cliente'])->default('cliente');
+            $table->enum('tipo_cliente', ['normal','visitante', 'cliente'])->default('cliente');
             $table->string('direccion')->nullable();
             $table->rememberToken();
             $table->timestamps();

@@ -1,13 +1,21 @@
-#POST http://192.168.100.21:8000/api/app/login
-#Accept: application/json
-#Content-Type: application/json
-#Accept: application/json
+#POST http://192.168.100.21:8000/api/app/create/user
 #
 #{
-#    "email": "cliente@gmail.com",
-#    "password": "123456789"
+#"name": "Cliente Nuevo",
+#"email": "cli@ gmail.com",
+#"usernick": "cli123",
+#"num_id": "789",
+#"password": "123456789",
+#"password_confirmation": "123456789",
+#"tipo_usuario": "cliente",
+#"tipo_cliente": "normal",
+#"telefono": "1234567890"
 #}
-
-POST http://192.168.100.21:8000/api/app/inmuebles/query
+POST http://192.168.100.21:8000/api/app/login
 Accept: application/json
 Content-Type: application/json
+
+{
+    "email": "propietario@gmail.com",
+    "password": "123456789"
+}
