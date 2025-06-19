@@ -17,7 +17,13 @@ class Pago extends Model
         'fecha_pago',
         'monto',
         'estado',
+        'historial_acciones',
+        'blockchain_id',
         'created_at',
         'updated_at'
     ];
+    public function contrato()
+    {
+        return $this->belongsTo(Contrato::class, 'contrato_id', 'id');
+    }
 }

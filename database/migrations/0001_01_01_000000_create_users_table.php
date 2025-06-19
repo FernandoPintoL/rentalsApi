@@ -16,8 +16,14 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('usernick')->unique();
+            $table->string('num_id')->unique();
+            $table->string('telefono')->nullable();
+            $table->string('photo_path')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->enum('tipo_usuario', ['propietario', 'cliente'])->default('cliente');
+            $table->enum('tipo_cliente', ['visitante', 'cliente'])->default('cliente');
+            $table->string('direccion')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

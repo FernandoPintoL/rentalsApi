@@ -14,20 +14,16 @@ return new class extends Migration
         Schema::create('contratos', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('inmueble_id');
-            $table->unsignedBigInteger('propietario_id');
-            $table->unsignedBigInteger('cliente_id');
-            $table->unsignedBigInteger('tipo_cliente_id');
+            $table->unsignedBigInteger('user_id');
             $table->date('fecha_inicio')->default(now());
             $table->date('fecha_fin')->nullable();
             $table->double('monto')->default(0);
-            $table->string('blockchain_id')->default('');
             $table->string('detalle')->default('');
-            $table->boolean('estado')->default(1);
+            $table->json('acciones_controls')->nullable();
+            $table->string('estado')->default('Activo'); // Activo, Inactivo, Cancelado
             $table->timestamps();
             $table->foreign('inmueble_id')->references('id')->on('inmuebles')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('propietario_id')->references('id')->on('propietarios')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('tipo_cliente_id')->references('id')->on('tipo_clientes')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

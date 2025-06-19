@@ -11,18 +11,30 @@ class Contrato extends Model
     use HasFactory;
     protected $table = "contratos";
     protected $primaryKey = "id";
+    public $timestamps = true;
     protected $fillable = [
-        'id',
         'inmueble_id',
-        'propietario_id',
-        'cliente_id',
-        'tipo_cliente_id',
+        'user_id',
         'fecha_inicio',
         'fecha_fin',
         'monto',
-        'blockchain_id',
         'detalle',
+        'estado',
+        'acciones_controls',
         'created_at',
         'updated_at'
     ];
+    public function inmueble()
+    {
+        return $this->belongsTo(Inmueble::class, 'inmueble_id', 'id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+    // obtener los pagos asociados al contrato
+    public function pagos()
+    {
+        return $this->hasMany(Pago::class, 'contrato_id', 'id');
+    }
 }

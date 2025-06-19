@@ -1,0 +1,13 @@
+#POST http://192.168.100.21:8000/api/app/login
+#Accept: application/json
+#Content-Type: application/json
+#Accept: application/json
+#
+#{
+#    "email": "cliente@gmail.com",
+#    "password": "123456789"
+#}
+
+POST http://192.168.100.21:8000/api/app/inmuebles/query
+Accept: application/json
+Content-Type: application/json

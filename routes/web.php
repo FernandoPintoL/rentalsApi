@@ -3,41 +3,25 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\{
-    AccesorioController,
-    AccionControlsContratoController,
-    AccionesControlController,
-    BilleteraController,
-    ClienteController,
     ContratoController,
     GaleriaInmuebleController,
-    InmuebleAccesorioController,
     InmuebleController,
     MenuController,
     PagoController,
     PermissionsController,
-    PropietarioController,
     RolesController,
-    TipoClienteController,
     TipoInmuebleController,
     UserController
 };
 
 $resources = [
-    'accesorio' => AccesorioController::class,
-    'accion-control-contrato' => AccionControlsContratoController::class,
-    'accion-control' => AccionesControlController::class,
-    'billetera' => BilleteraController::class,
-    'cliente' => ClienteController::class,
     'contrato' => ContratoController::class,
     'galeria-inmueble' => GaleriaInmuebleController::class,
-    'inmueble-accesorio' => InmuebleAccesorioController::class,
     'inmueble' => InmuebleController::class,
     'menu' => MenuController::class,
     'pago' => PagoController::class,
     'permissions' => PermissionsController::class,
-    'propietario' => PropietarioController::class,
     'roles' => RolesController::class,
-    'tipo-cliente' => TipoClienteController::class,
     'tipo-inmueble' => TipoInmuebleController::class,
     'users' => UserController::class,
 ];

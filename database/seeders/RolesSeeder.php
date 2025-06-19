@@ -23,8 +23,16 @@ class RolesSeeder extends Seeder
         // Asignar permisos al rol de Super Admin
         $admin->givePermissionTo(Permission::all());
 
-        $user = User::find(1);
+        /*$user = User::find(1);
         $user->assignRole([$admin]);
-        $user->givePermissionTo(Permission::all());
+        $user->givePermissionTo(Permission::all());*/
+
+        // asiganar el rol de propietario al usuario con id 2
+        $propietario = User::find(1);
+        $propietario->assignRole('Propietario');
+
+        // asiganar el rol de cliente al usuario con id 3
+        $cliente = User::find(2);
+        $cliente->assignRole('Cliente');
     }
 }

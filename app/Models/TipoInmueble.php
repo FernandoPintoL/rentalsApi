@@ -12,10 +12,13 @@ class TipoInmueble extends Model
     protected $table = "tipo_inmuebles";
     protected $primaryKey = "id";
     protected $fillable = [
-        'id',
         'nombre',
         'detalle',
         'created_at',
         'updated_at'
     ];
+    public function inmuebles()
+    {
+        return $this->hasMany(Inmueble::class, 'tipo_inmueble_id', 'id');
+    }
 }

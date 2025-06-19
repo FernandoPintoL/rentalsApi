@@ -19,10 +19,6 @@ class InmuebleController extends Controller
     public function __construct()
     {
         $this->model = new Inmueble();
-        /*$this->middleware('permission:almacen-list', ['only' => ['index', 'show']]);
-        $this->middleware('permission:almacen-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:almacen-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:almacen-delete', ['only' => ['destroy']]);*/
     }
 
     public function query(Request $request)
@@ -141,7 +137,7 @@ class InmuebleController extends Controller
     {
         try {
             $inmueble->update($request->all());
-            return ResponseService::success('Registro actualizado correctamente', $accesorio);
+            return ResponseService::success('Registro actualizado correctamente', $inmueble);
         } catch (\Exception $e) {
             return ResponseService::error('Error al actualizar el registro', $e->getMessage());
         }

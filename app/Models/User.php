@@ -22,6 +22,12 @@ class User extends Authenticatable
         'name',
         'email',
         'usernick',
+        'num_id',
+        'telefono',
+        'photo_path',
+        'tipo_usuario',
+        'tipo_cliente',
+        'direccion',
         'password',
         'created_at',
         'updated_at',
@@ -36,17 +42,4 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
 }
