@@ -43,32 +43,14 @@ class AuthenticatedController extends Controller
     }
     public function createUser(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'usernick' => 'required|string|max:50',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'num_id' => 'required|string|max:20',
-            'tipo_usuario' => 'required',
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'usernick' => $request->usernick,
-            'num_id' => $request->num_id,
-            'telefono' => $request->telefono,
-            'direccion' => $request->direccion,
-            'tipo_cliente' => $request->tipo_cliente,
-            'tipo_usuario' => $request->tipo_usuario,
-            'password' => Hash::make($request->password),
-        ]);
-
-        Auth::login($user);
-        $datosSession = session()->all();
-        $user->setAttribute('session_data', $datosSession);
-
-        return ResponseService::success('Usuario creado exitosamente', $user,  201);
+        try{
+            $user = User::create($request->all());
+            $user->password = Hash::make($request->password);
+            $user->save();
+            return ResponseService::success('Usuario creado exitosamente', $user, 201);
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al crear el usuario', $e->getMessage(), 500);
+        }
     }
 
     /**
@@ -90,8 +72,18 @@ class AuthenticatedController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        try{
+            if (Auth::check()) {
+                Auth::logout();
+                session()->flush();
+                return ResponseService::success('Sesión cerrada exitosamente', [], 200);
+            } else {
+                return ResponseService::success('No hay sesión activa', [], 200);
+            }
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al cerrar sesión', $e->getMessage(), 500);
+        }
     }
 }

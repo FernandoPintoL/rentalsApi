@@ -14,9 +14,7 @@ class GaleriaInmueble extends Model
     public $timestamps = true;
     protected $fillable = [
         'inmueble_id',
-        'photo_path',
-        'created_at',
-        'updated_at'
+        'photo_path'
     ];
     public function inmueble()
     {

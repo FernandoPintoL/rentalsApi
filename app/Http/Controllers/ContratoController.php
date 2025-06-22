@@ -116,7 +116,6 @@ class ContratoController extends Controller
      */
     public function show(Contrato $contrato)
     {
-        //
     }
 
     /**
@@ -146,7 +145,46 @@ class ContratoController extends Controller
             return ResponseService::error('Error al actualizar el registro', $e->getMessage());
         }
     }
-
+    // actualizar estado del contrato
+    public function updateEstado(Request $request, Contrato $contrato)
+    {
+        try {
+            $contrato->update(['estado' => $request->estado]);
+            return ResponseService::success('Estado del contrato actualizado correctamente', $contrato);
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al actualizar el estado del contrato', $e->getMessage());
+        }
+    }
+    // actualizar contrato cliente aprobado
+    public function updateContratoClienteAprobado(Request $request, Contrato $contrato)
+    {
+        try {
+            $contrato->update(['cliente_aprobado' => $request->cliente_aprobado]);
+            return ResponseService::success('Contrato cliente aprobado actualizado correctamente', $contrato);
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al actualizar el contrato cliente aprobado', $e->getMessage());
+        }
+    }
+    // actualizar fecha de pago del contrato
+    public function updateFechaPago(Request $request, Contrato $contrato)
+    {
+        try {
+            $contrato->update(['fecha_pago' => $request->fecha_pago]);
+            return ResponseService::success('Fecha de pago del contrato actualizada correctamente', $contrato);
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al actualizar la fecha de pago del contrato', $e->getMessage());
+        }
+    }
+    // actualizar blockchain del contrato
+    public function updateBlockchain(Request $request, Contrato $contrato)
+    {
+        try {
+            $contrato->update(['blockchain_address' => $request->blockchain_address]);
+            return ResponseService::success('Blockchain del contrato actualizado correctamente', $contrato);
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al actualizar la blockchain del contrato', $e->getMessage());
+        }
+    }
     /**
      * Remove the specified resource from storage.
      */
@@ -157,6 +195,36 @@ class ContratoController extends Controller
             return ResponseService::success('Registro eliminado correctamente');
         } catch (\Exception $e) {
             return ResponseService::error('Error al eliminar el registro', $e->getMessage());
+        }
+    }
+    // dame contrato por usuario
+    public function contratoPorUsuario($userId)
+    {
+        try {
+            $contratos = $this->model::where('user_id', $userId)->get();
+            return ResponseService::success('Contratos obtenidos correctamente', $contratos);
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al obtener los contratos', $e->getMessage());
+        }
+    }
+    // dame contrato por propietario
+    public function contratoPorPropietario($propietarioId)
+    {
+        try {
+            $contratos = $this->model::where('propietario_id', $propietarioId)->get();
+            return ResponseService::success('Contratos obtenidos correctamente', $contratos);
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al obtener los contratos', $e->getMessage());
+        }
+    }
+    // dame contrato por id
+    public function contratoPorId($contratoId)
+    {
+        try {
+            $contrato = $this->model::findOrFail($contratoId);
+            return ResponseService::success('Contrato obtenido correctamente', $contrato);
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al obtener el contrato', $e->getMessage());
         }
     }
 }

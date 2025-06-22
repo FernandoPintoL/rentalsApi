@@ -15,12 +15,16 @@ class Contrato extends Model
     protected $fillable = [
         'inmueble_id',
         'user_id',
+        'solicitud_id',
         'fecha_inicio',
         'fecha_fin',
+        'fecha_pago',
         'monto',
         'detalle',
         'estado',
-        'acciones_controls',
+        'condicionales', // Almacena los condicionales en formato JSON
+        'blockchain_address', // Dirección en la blockchain
+        'cliente_aprobado', // Indica si el cliente ha aprobado el contrato
         'created_at',
         'updated_at'
     ];

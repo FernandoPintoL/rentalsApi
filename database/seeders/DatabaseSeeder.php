@@ -59,7 +59,8 @@ class DatabaseSeeder extends Seeder
             PermissionsSeeder::class,
             RolesSeeder::class,
             TipoInmuebleSeeder::class,
-            MenuSeeder::class,
+            DeviceSeeder::class,
+//            ServicioBasicoSeeder::class,
         ]);
     }
 }

@@ -38,38 +38,37 @@ class TipoInmuebleController extends Controller
             $modelAttributes[] = 'created_at';
             $modelAttributes[] = 'updated_at';
 
-            // Validar que los atributos estén en la lista de atributos permitidos
+            // Validación de atributos
             foreach ($attributes as $attribute) {
                 if (!in_array($attribute, $modelAttributes)) {
                     return ResponseService::error('Atributo no permitido: ' . $attribute, '', 400);
                 }
             }
 
-            // Construir la consulta dinámica
             $query = $this->model::query();
-            $first = true;
-            foreach ($attributes as $attribute) {
-                if ($first) {
-                    if (in_array($attribute, ['created_at', 'updated_at'])) {
-                        $query->whereDate($attribute, $queryStr);
-                    } else {
-                        $query->where($attribute, 'LIKE', '%' . $queryStr . '%');
+
+            if (!empty($queryStr)) {
+                $query->where(function ($q) use ($attributes, $queryStr) {
+                    foreach ($attributes as $i => $attribute) {
+                        if (in_array($attribute, ['created_at', 'updated_at'])) {
+                            $method = $i === 0 ? 'whereDate' : 'orWhereDate';
+                            $q->$method($attribute, $queryStr);
+                        } else {
+                            $method = $i === 0 ? 'where' : 'orWhere';
+                            $q->$method($attribute, 'LIKE', '%' . $queryStr . '%');
+                        }
                     }
-                    $first = false;
-                } else {
-                    if (in_array($attribute, ['created_at', 'updated_at'])) {
-                        $query->orWhereDate($attribute, $queryStr);
-                    } else {
-                        $query->orWhere($attribute, 'LIKE', '%' . $queryStr . '%');
-                    }
-                }
+                });
             }
 
-            //$response = $query->orderBy('id', 'ASC')->paginate($perPage, ['*'], 'page', $page);
             $response = $query->orderBy('id', 'ASC')->get();
-            $cantidad = count($response);
-            $str = strval($cantidad);
-            return ResponseService::success("$str datos encontrados con $queryStr", $response);
+            // calcular el total de registros
+            $total = $response->count();
+
+            return ResponseService::success(
+                "{$total} datos encontrados con {$queryStr}",
+                $response
+            );
         } catch (\Exception $e) {
             return ResponseService::error($e->getMessage(), '', $e->getCode());
         }
@@ -141,7 +140,7 @@ class TipoInmuebleController extends Controller
     {
         try {
             $tipoInmueble->update($request->all());
-            return ResponseService::success('Registro actualizado correctamente', $accesorio);
+            return ResponseService::success('Registro actualizado correctamente', $tipoInmueble);
         } catch (\Exception $e) {
             return ResponseService::error('Error al actualizar el registro', $e->getMessage());
         }

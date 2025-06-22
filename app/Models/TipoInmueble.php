@@ -12,6 +12,7 @@ class TipoInmueble extends Model
     protected $table = "tipo_inmuebles";
     protected $primaryKey = "id";
     protected $fillable = [
+        'id',
         'nombre',
         'detalle',
         'created_at',

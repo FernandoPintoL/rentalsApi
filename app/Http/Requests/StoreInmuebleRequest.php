@@ -12,7 +12,7 @@ class StoreInmuebleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return PermissionService::havePermission('inmueble-store');
+        return true;
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Accesorio;
+use App\Models\GaleriaInmueble;
 use App\Models\Inmueble;
 use App\Http\Requests\StoreInmuebleRequest;
 use App\Http\Requests\UpdateInmuebleRequest;
@@ -31,6 +32,7 @@ class InmuebleController extends Controller
 
             // Obtener los atributos del modelo
             $modelAttributes = $this->model->getFillable();
+            $modelAttributes[] = 'id';
             $modelAttributes[] = 'created_at';
             $modelAttributes[] = 'updated_at';
 
@@ -43,29 +45,28 @@ class InmuebleController extends Controller
 
             // Construir la consulta dinámica
             $query = $this->model::query();
-            $first = true;
-            foreach ($attributes as $attribute) {
-                if ($first) {
-                    if (in_array($attribute, ['created_at', 'updated_at'])) {
-                        $query->whereDate($attribute, $queryStr);
-                    } else {
-                        $query->where($attribute, 'LIKE', '%' . $queryStr . '%');
-                    }
-                    $first = false;
-                } else {
-                    if (in_array($attribute, ['created_at', 'updated_at'])) {
-                        $query->orWhereDate($attribute, $queryStr);
-                    } else {
-                        $query->orWhere($attribute, 'LIKE', '%' . $queryStr . '%');
-                    }
-                }
-            }
 
+            if (!empty($queryStr)) {
+                $query->where(function ($q) use ($attributes, $queryStr) {
+                    foreach ($attributes as $i => $attribute) {
+                        if (in_array($attribute, ['created_at', 'updated_at'])) {
+                            $method = $i === 0 ? 'whereDate' : 'orWhereDate';
+                            $q->$method($attribute, $queryStr);
+                        } else {
+                            $method = $i === 0 ? 'where' : 'orWhere';
+                            $q->$method($attribute, 'LIKE', '%' . $queryStr . '%');
+                        }
+                    }
+                });
+            }
             //$response = $query->orderBy('id', 'ASC')->paginate($perPage, ['*'], 'page', $page);
             $response = $query->orderBy('id', 'ASC')->get();
-            $cantidad = count($response);
-            $str = strval($cantidad);
-            return ResponseService::success("$str datos encontrados con $queryStr", $response);
+            // cantidad de datos encontrados
+            $response->total = $response->count();
+            return ResponseService::success(
+                "{$response->total} datos encontrados con {$queryStr}",
+                $response
+            );
         } catch (\Exception $e) {
             return ResponseService::error($e->getMessage(), '', $e->getCode());
         }
@@ -100,7 +101,18 @@ class InmuebleController extends Controller
     public function store(StoreInmuebleRequest $request)
     {
         try {
-            $data = $this->model::create($request->all());
+            $data = $this->model::create([
+                'user_id' => $request->user_id,
+                'nombre' => $request->nombre,
+                'detalle' => $request->detalle,
+                'num_habitacion' => $request->num_habitacion,
+                'num_piso' => $request->num_piso,
+                'precio' => $request->precio,
+                'isOcupado' => $request->isOcupado,
+                'tipo_inmueble_id' => $request->tipo_inmueble_id, // Relación con tipo_inmuebles
+                'accesorios' => json_encode($request->accesorios ?? []),
+                'servicios_basicos' => json_encode($request->servicios_basicos ?? [])
+            ]);
             return ResponseService::success('Registro guardado correctamente', $data);
         } catch (\Exception $e) {
             return ResponseService::error('Error al guardar el registro', $e->getMessage());
@@ -153,6 +165,113 @@ class InmuebleController extends Controller
             return ResponseService::success('Registro eliminado correctamente');
         } catch (\Exception $e) {
             return ResponseService::error('Error al eliminar el registro', $e->getMessage());
+        }
+    }
+    // get inmuebles por propietario
+    public function getInmueblesByPropietario(Request $request)
+    {
+        try {
+            $propietarioId = $request->get('propietario_id');
+            if (!$propietarioId) {
+                return ResponseService::error('ID de propietario no proporcionado', '', 400);
+            }
+            $inmuebles = $this->model::where('user_id', $propietarioId)->get();
+            return ResponseService::success('Inmuebles encontrados', $inmuebles);
+        } catch (\Exception $e) {
+            return ResponseService::error($e->getMessage(), '', $e->getCode());
+        }
+    }
+
+    // get inmuebles por id
+    public function getInmuebleById(Request $request)
+    {
+        try {
+            $inmuebleId = $request->get('inmueble_id');
+            if (!$inmuebleId) {
+                return ResponseService::error('ID de inmueble no proporcionado', '', 400);
+            }
+
+            $inmueble = $this->model::find($inmuebleId);
+            if (!$inmueble) {
+                return ResponseService::error('Inmueble no encontrado', '', 404);
+            }
+
+            return ResponseService::success('Inmueble encontrado', $inmueble);
+        } catch (\Exception $e) {
+            return ResponseService::error($e->getMessage(), '', $e->getCode());
+        }
+    }
+    // subir imagen del inmueble
+    public function subirImagen(Request $request)
+    {
+        try {
+            $inmuebleId = $request->get('inmueble_id');
+            if (!$inmuebleId) {
+                return ResponseService::error('ID de inmueble no proporcionado', '', 400);
+            }
+
+            if (!$request->hasFile('file')) {
+                return ResponseService::error('No se ha proporcionado una imagen', '', 400);
+            }
+
+            $file = $request->file('file');
+            $extension = $file->getClientOriginalExtension();
+            $fileName = 'imagen_' . $inmuebleId . '.' . $extension;
+            $path = $file->store('imagenes/inmuebles', 'public');
+
+            $galeriaInmueble = new \App\Models\GaleriaInmueble();
+            $galeriaInmueble->inmueble_id = $inmuebleId;
+            $galeriaInmueble->photo_path = $path;
+            $galeriaInmueble->save();
+
+            return ResponseService::success('Imagen subida correctamente', ['path' => $path]);
+        } catch (\Exception $e) {
+            return ResponseService::error($e->getMessage(), '', $e->getCode());
+        }
+    }
+    // get galeria de imagenes del inmueble
+    public function getGaleriaImagenes(Inmueble $inmueble)
+    {
+        try {
+            $galeria_imagenes = GaleriaInmueble::where('inmueble_id', $inmueble->id)->get(); // Asumiendo que tienes una relación definida en el modelo Inmueble
+            return ResponseService::success('Galería de imágenes obtenida correctamente', $galeria_imagenes);
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al obtener la galería de imágenes', $e->getMessage());
+        }
+    }
+    public function firstImage(Inmueble $inmueble){
+        try {
+            $galeria_imagenes = GaleriaInmueble::where('inmueble_id', $inmueble->id)->first(); // Asumiendo que tienes una relación definida en el modelo Inmueble
+            return ResponseService::success('imágenes obtenida correctamente', $galeria_imagenes);
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al obtener la galería de imágenes', $e->getMessage());
+        }
+    }
+    // eliminar imagen del inmueble
+    public function eliminarImagen(Request $request)
+    {
+        try {
+            $inmuebleId = $request->get('inmueble_id');
+            if (!$inmuebleId) {
+                return ResponseService::error('ID de inmueble no proporcionado', '', 400);
+            }
+
+            $inmueble = $this->model::find($inmuebleId);
+            if (!$inmueble) {
+                return ResponseService::error('Inmueble no encontrado', '', 404);
+            }
+
+            if ($inmueble->imagen) {
+                // Eliminar el archivo de imagen del almacenamiento
+                \Storage::disk('public')->delete($inmueble->imagen);
+                $inmueble->imagen = null; // Limpiar el campo de imagen
+                $inmueble->save();
+                return ResponseService::success('Imagen eliminada correctamente');
+            } else {
+                return ResponseService::error('No hay imagen para eliminar', '', 400);
+            }
+        } catch (\Exception $e) {
+            return ResponseService::error($e->getMessage(), '', $e->getCode());
         }
     }
 }

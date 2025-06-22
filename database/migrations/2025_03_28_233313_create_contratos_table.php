@@ -13,17 +13,19 @@ return new class extends Migration
     {
         Schema::create('contratos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('inmueble_id');
-            $table->unsignedBigInteger('user_id');
-            $table->date('fecha_inicio')->default(now());
-            $table->date('fecha_fin')->nullable();
+            $table->foreignId('inmueble_id')->constrained('inmuebles')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('solicitud_alquiler_id')->nullable()->constrained('solicitud_alquiler')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->dateTime('fecha_inicio')->default(now());
+            $table->dateTime('fecha_fin')->nullable();
+            $table->dateTime('fecha_pago')->nullable();
             $table->double('monto')->default(0);
             $table->string('detalle')->default('');
-            $table->json('acciones_controls')->nullable();
-            $table->string('estado')->default('Activo'); // Activo, Inactivo, Cancelado
+            $table->json('condicionales')->nullable();
+            $table->string('estado')->default('activo'); // Activo, Inactivo, Cancelado
+            $table->string('blockchain_address')->nullable(); // Dirección en la blockchain
+            $table->boolean('cliente_aprobado')->default(false);
             $table->timestamps();
-            $table->foreign('inmueble_id')->references('id')->on('inmuebles')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

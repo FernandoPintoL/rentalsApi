@@ -14,11 +14,11 @@ class Pago extends Model
     protected $fillable = [
         'id',
         'contrato_id',
+        'blockchain_id',
         'fecha_pago',
         'monto',
         'estado',
         'historial_acciones',
-        'blockchain_id',
         'created_at',
         'updated_at'
     ];

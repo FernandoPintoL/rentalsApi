@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Inmueble extends Model
 {
@@ -12,7 +13,6 @@ class Inmueble extends Model
     protected $table = "inmuebles";
     protected $primaryKey = "id";
     protected $fillable = [
-        'id',
         'user_id',
         'nombre',
         'detalle',
@@ -22,8 +22,7 @@ class Inmueble extends Model
         'isOcupado',
         'accesorios',
         'servicios_basicos',
-        'created_at',
-        'updated_at'
+        'tipo_inmueble_id', // Relación con tipo_inmuebles
     ];
     public function user()
     {
@@ -34,6 +33,21 @@ class Inmueble extends Model
         return $this->hasMany(Contrato::class, 'inmueble_id', 'id');
     }
     public function galeria()
+    {
+        return $this->hasMany(GaleriaInmueble::class, 'inmueble_id', 'id');
+    }
+    // Relación muchos a muchos con dispositivos
+    public function devices(): BelongsToMany
+    {
+        return $this->belongsToMany(Device::class, 'inmueble_device')
+            ->withPivot('role', 'fecha_asignacion')
+            ->withTimestamps();
+    }
+    public function tipoInmueble()
+    {
+        return $this->belongsTo(TipoInmueble::class, 'tipo_inmueble_id', 'id');
+    }
+    public function imagenes()
     {
         return $this->hasMany(GaleriaInmueble::class, 'inmueble_id', 'id');
     }

@@ -2,18 +2,16 @@
 
 namespace App\Http\Requests;
 
-use App\Services\PermissionService;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateInmuebleRequest extends FormRequest
+class StoreCondicionalRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-//        return PermissionService::havePermission('inmueble-update');
-        return true;
+        return false;
     }
 
     /**

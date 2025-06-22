@@ -13,14 +13,13 @@ return new class extends Migration
     {
         Schema::create('pagos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('contrato_id');
+            $table->foreignId('contrato_id')->constrained('contratos')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('blockchain_id')->default('');
             $table->date('fecha_pago')->default(now());
             $table->double('monto')->default(0);
             $table->string('estado')->default('');
             $table->json('historial_acciones')->nullable();
             $table->timestamps();
-            $table->foreign('contrato_id')->references('id')->on('contratos')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

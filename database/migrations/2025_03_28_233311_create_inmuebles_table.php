@@ -13,19 +13,17 @@ return new class extends Migration
     {
         Schema::create('inmuebles', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('nombre')->unique();
-            $table->string('detalle')->unique();
+            $table->string('detalle')->nullable();
             $table->string('num_habitacion')->default('01');
             $table->string('num_piso')->default('PB');
             $table->double('precio')->default(1);
             $table->boolean('isOcupado')->default(false);
-            $table->unsignedBigInteger('tipo_inmueble_id')->nullable();
+            $table->foreignId('tipo_inmueble_id')->nullable()->constrained('tipo_inmuebles')->cascadeOnDelete()->cascadeOnUpdate();
             $table->json('accesorios')->nullable();
             $table->json('servicios_basicos')->nullable();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('tipo_inmueble_id')->references('id')->on('tipo_inmuebles')->onDelete('set null')->onUpdate('cascade');
         });
     }
 

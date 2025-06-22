@@ -10,13 +10,13 @@ class ResponseService
             'isSuccess' => true,
             'isMessageError' => false,
             'message' => $message,
-            'messageError' => '',
+            'messageError' => [],
             'data' => $data,
             'statusCode' => $statusCode
         ], $statusCode);
     }
 
-    public static function error($message, $messageError = '', $statusCode = 500)
+    public static function error($message, $messageError = [], $statusCode = 500)
     {
         return response()->json([
             'isRequest' => true,
