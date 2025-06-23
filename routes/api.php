@@ -45,8 +45,9 @@ Route::post('/app/create/user', [AuthenticatedController::class, 'createUser'])-
 foreach ($controllers as $key => $controller) {
     Route::post("/app/$key/store", [$controller, 'store'])->name("app.$key.store");
     Route::post("/app/$key/query", [$controller, 'query'])->name("app.$key.query");
+    Route::put("/app/$key/update", [$controller, 'update'])->name("app.$key.update");
 }
-Route::put('/app/inmuebles/{inmueble}', [InmuebleController::class, 'update'])->name('app.inmuebles.update');
+//Route::put('/app/inmuebles/{inmueble}', [InmuebleController::class, 'update'])->name('app.inmuebles.update');
 Route::prefix('/app/inmuebles/{inmueble}')->group(function () {
     // Asignar dispositivo a inmueble (POST)
     Route::post('/dispositivos', [InmuebleDeviceController::class, 'store'])->name('inmueble.device.store');
@@ -56,8 +57,8 @@ Route::prefix('/app/inmuebles/{inmueble}')->group(function () {
     Route::post('/control-dispositivo', [InmuebleDeviceController::class, 'controlDevice'])->name('inmueble.device.control');
 });
 
-// Ruta solicitudes por user
-Route::get('/app/solicitudes-alquiler/user/{userId}', [SolicitudAlquilerModelController::class, 'solicitudesPorUsuario'])->name('app.solicitudes-alquiler.solicitudesPorUsuario');
+// Ruta solicitudes por cliente
+Route::get('/app/solicitudes-alquiler/cliente/{clienteId}', [SolicitudAlquilerModelController::class, 'solicitudesPorUsuario'])->name('app.solicitudes-alquiler.solicitudesPorUsuario');
 // Ruta solicitudes por propietario
 Route::get('/app/solicitudes-alquiler/propietario/{propietarioId}', [SolicitudAlquilerModelController::class, 'solicitudesPorPropietario'])->name('app.solicitudes-alquiler.solicitudesPorPropietario');
 // Ruta solicitudes de usuario por estado
@@ -68,13 +69,13 @@ Route::put('/app/solicitudes-alquiler/{solicitudAlquilerModel}/estado', [Solicit
 // Ruta inmuebles por propietario
 Route::post('/app/inmuebles/propietario', [InmuebleController::class, 'getInmueblesByPropietario'])->name('app.inmuebles.inmueblesPorPropietario');
 // Ruta inmuebles por id
-Route::get('/app/inmuebles/{inmueble}', [InmuebleController::class, 'getInmuebleById'])->name('app.inmuebles.show');
 // Ruta subir imagen del inmueble
 Route::post('/app/inmuebles/subir-imagen', [InmuebleController::class, 'subirImagen'])->name('app.inmuebles.subirImagen');
+Route::get('/app/inmuebles/{inmueble}', [InmuebleController::class, 'getInmuebleById'])->name('app.inmuebles.show');
 // Ruta galeria de imagenes del inmueble
 Route::get('/app/inmuebles/{inmueble}/galeria', [InmuebleController::class, 'getGaleriaImagenes'])->name('app.inmuebles.galeria');
+Route::get('app/inmuebles/{inmueble}/galeria/first', [GaleriaInmuebleController::class, 'firstImage'])->name('app.inmuebles.galeria.first');
 // Ruta para eliminar una imagen del inmueble
 Route::delete('/app/inmuebles/{inmueble}/galeria/{imagenId}', [GaleriaInmuebleController::class, 'destroy'])->name('app.inmuebles.galeria.destroy');
-Route::get('app/inmuebles/{inmueble}/galeria/first', [GaleriaInmuebleController::class, 'firstImage'])->name('app.inmuebles.galeria.first');
 // Eliminar inmueble
 Route::delete('/app/inmuebles/{inmueble}', [InmuebleController::class, 'destroy'])->name('app.inmuebles.destroy');

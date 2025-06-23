@@ -97,10 +97,10 @@ class SolicitudAlquilerModelController extends Controller
     }
 
     // dame solicitudes por usuario
-    public function solicitudesPorUsuario($userId)
+    public function solicitudesPorClienteId($clienteId)
     {
         try {
-            $solicitudes = SolicitudAlquilerModel::where('user_id', $userId)->get();
+            $solicitudes = SolicitudAlquilerModel::where('user_id', $clienteId)->get();
             return ResponseService::success('Solicitudes de alquiler obtenidas exitosamente', $solicitudes);
         } catch (\Exception $e) {
             return ResponseService::error('Error al obtener las solicitudes de alquiler', ['error' => $e->getMessage()], 500);
@@ -110,7 +110,9 @@ class SolicitudAlquilerModelController extends Controller
     public function solicitudesPorPropietario($propietarioId)
     {
         try {
-            $solicitudes = SolicitudAlquilerModel::where('user_id', $propietarioId)->get();
+            $solicitudes = SolicitudAlquilerModel::whereHas('inmuebles', function ($query) use ($propietarioId) {
+                $query->where('user_id', $propietarioId);
+            })->get();
             return ResponseService::success('Solicitudes de alquiler obtenidas exitosamente', $solicitudes);
         } catch (\Exception $e) {
             return ResponseService::error('Error al obtener las solicitudes de alquiler', ['error' => $e->getMessage()], 500);
