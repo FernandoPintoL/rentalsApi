@@ -20,5 +20,4 @@ class GaleriaInmueble extends Model
     {
         return $this->belongsTo(Inmueble::class, 'inmueble_id', 'id');
     }
-
 }

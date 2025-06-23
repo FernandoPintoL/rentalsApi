@@ -76,3 +76,5 @@ Route::get('/app/inmuebles/{inmueble}/galeria', [InmuebleController::class, 'get
 // Ruta para eliminar una imagen del inmueble
 Route::delete('/app/inmuebles/{inmueble}/galeria/{imagenId}', [GaleriaInmuebleController::class, 'destroy'])->name('app.inmuebles.galeria.destroy');
 Route::get('app/inmuebles/{inmueble}/galeria/first', [GaleriaInmuebleController::class, 'firstImage'])->name('app.inmuebles.galeria.first');
+// Eliminar inmueble
+Route::delete('/app/inmuebles/{inmueble}', [InmuebleController::class, 'destroy'])->name('app.inmuebles.destroy');

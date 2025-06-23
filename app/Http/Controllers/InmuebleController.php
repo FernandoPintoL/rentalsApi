@@ -161,6 +161,19 @@ class InmuebleController extends Controller
     public function destroy(Inmueble $inmueble)
     {
         try {
+            // eliminar las imágenes asociadas al inmueble si existem
+            $galeria = GaleriaInmueble::where('inmueble_id', $inmueble->id)->get();
+            foreach ($galeria as $imagen) {
+                if ($imagen->photo_path && \Storage::disk('public')->exists($imagen->photo_path)) {
+                    \Storage::disk('public')->delete($imagen->photo_path);
+                }
+                $imagen->delete();
+            }
+            // eliminar los devices asociados al inmueble
+            $inmueble->devices()->detach();
+            // eliminar solicitudes de alquiler asociadas al inmueble
+            $inmueble->solicitudesAlquiler()->delete();
+            // eliminar el inmueble
             $inmueble->delete();
             return ResponseService::success('Registro eliminado correctamente');
         } catch (\Exception $e) {

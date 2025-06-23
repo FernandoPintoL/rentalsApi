@@ -39,7 +39,7 @@ class Inmueble extends Model
     // Relación muchos a muchos con dispositivos
     public function devices(): BelongsToMany
     {
-        return $this->belongsToMany(Device::class, 'inmueble_device')
+        return $this->belongsToMany(Device::class, 'inmueble_devices')
             ->withPivot('role', 'fecha_asignacion')
             ->withTimestamps();
     }
@@ -50,5 +50,9 @@ class Inmueble extends Model
     public function imagenes()
     {
         return $this->hasMany(GaleriaInmueble::class, 'inmueble_id', 'id');
+    }
+    public function solicitudesAlquiler()
+    {
+        return $this->hasMany(SolicitudAlquilerModel::class, 'inmueble_id', 'id');
     }
 }

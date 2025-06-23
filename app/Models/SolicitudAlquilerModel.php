@@ -19,4 +19,8 @@ class SolicitudAlquilerModel extends Model
         'mensaje',
         'servicios_basicos',
     ];
+    public function inmueble()
+    {
+        return $this->belongsTo(Inmueble::class, 'inmueble_id', 'id');
+    }
 }
