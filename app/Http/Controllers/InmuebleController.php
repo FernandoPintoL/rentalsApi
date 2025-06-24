@@ -181,14 +181,10 @@ class InmuebleController extends Controller
         }
     }
     // get inmuebles por propietario
-    public function getInmueblesByPropietario(Request $request)
+    public function getInmueblesByPropietario($userId)
     {
         try {
-            $propietarioId = $request->get('propietario_id');
-            if (!$propietarioId) {
-                return ResponseService::error('ID de propietario no proporcionado', '', 400);
-            }
-            $inmuebles = $this->model::where('user_id', $propietarioId)->get();
+            $inmuebles = $this->model::where('user_id', $userId)->get();
             return ResponseService::success('Inmuebles encontrados', $inmuebles);
         } catch (\Exception $e) {
             return ResponseService::error($e->getMessage(), '', $e->getCode());
@@ -196,19 +192,9 @@ class InmuebleController extends Controller
     }
 
     // get inmuebles por id
-    public function getInmuebleById(Request $request)
+    public function getInmuebleById(Inmueble $inmueble)
     {
         try {
-            $inmuebleId = $request->get('inmueble_id');
-            if (!$inmuebleId) {
-                return ResponseService::error('ID de inmueble no proporcionado', '', 400);
-            }
-
-            $inmueble = $this->model::find($inmuebleId);
-            if (!$inmueble) {
-                return ResponseService::error('Inmueble no encontrado', '', 404);
-            }
-
             return ResponseService::success('Inmueble encontrado', $inmueble);
         } catch (\Exception $e) {
             return ResponseService::error($e->getMessage(), '', $e->getCode());

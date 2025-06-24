@@ -104,7 +104,18 @@ class ContratoController extends Controller
     public function store(StoreContratoRequest $request)
     {
         try {
-            $data = $this->model::create($request->all());
+            $data = $this->model::create([
+                'user_id' => $request->user_id,
+                'inmueble_id' => $request->inmueble_id,
+                'fecha_inicio' => $request->fecha_inicio,
+                'fecha_fin' => $request->fecha_fin,
+                'monto' => $request->monto,
+                'estado' => $request->estado,
+                'cliente_aprobado' => $request->cliente_aprobado,
+                'fecha_pago' => $request->fecha_pago,
+                'blockchain_address' => $request->blockchain_address,
+                'condicionales' => json_encode($request->condicionales ?? []),
+            ]);
             return ResponseService::success('Registro guardado correctamente', $data);
         } catch (\Exception $e) {
             return ResponseService::error('Error al guardar el registro', $e->getMessage());
@@ -216,7 +227,7 @@ class ContratoController extends Controller
     public function getContratosByPropietarioId($propietarioId)
     {
         try {
-            $contratos = $this->model::where('propietario_id', $propietarioId)->get();
+            $contratos = $this->model::where('user_id', $propietarioId)->get();
             return ResponseService::success('Contratos obtenidos correctamente', $contratos);
         } catch (\Exception $e) {
             return ResponseService::error('Error al obtener los contratos', $e->getMessage());

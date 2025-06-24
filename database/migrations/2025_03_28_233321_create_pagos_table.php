@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pagos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('contrato_id')->constrained('contratos')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('blockchain_id')->default('');
+            $table->string('blockchain_id')->default('')->nullable();
             $table->date('fecha_pago')->default(now());
             $table->double('monto')->default(0);
             $table->string('estado')->default('');

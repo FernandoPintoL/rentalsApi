@@ -104,7 +104,14 @@ class PagoController extends Controller
     public function store(StorePagoRequest $request)
     {
         try {
-            $data = $this->model::create($request->all());
+            $data = $this->model::create([
+                'contrato_id' => $request->contrato_id,
+                'monto' => $request->monto,
+                'fecha_pago' => $request->fecha_pago,
+                'estado' => $request->estado,
+                'blockchain_id' => $request->blockchain_id,
+                'historial_acciones' => json_encode($request->historial_acciones ?? []),
+            ]);
             return ResponseService::success('Registro guardado correctamente', $data);
         } catch (\Exception $e) {
             return ResponseService::error('Error al guardar el registro', $e->getMessage());

@@ -40,7 +40,7 @@ Route::post('/app/create/user', [AuthenticatedController::class, 'createUser'])-
 foreach ($controllers as $key => $controller) {
     Route::post("/app/$key/store", [$controller, 'store'])->name("app.$key.store");
     Route::post("/app/$key/query", [$controller, 'query'])->name("app.$key.query");
-    Route::put("/app/$key/update", [$controller, 'update'])->name("app.$key.update");
+//    Route::put("/app/$key/update", [$controller, 'update'])->name("app.$key.update");
 }
 
 // Ruta inmuebles dispositivos
@@ -51,9 +51,9 @@ Route::prefix('/app/inmuebles/{inmueble}')->group(function () {
 });
 
 // Ruta inmuebles por propietario
-Route::post('/app/inmuebles/propietario', [InmuebleController::class, 'getInmueblesByPropietario'])->name('app.inmuebles.inmueblesPorPropietario');
+Route::get('/app/inmuebles/propietario/{userId}', [InmuebleController::class, 'getInmueblesByPropietario'])->name('app.inmuebles.inmueblesPorPropietario');
 Route::post('/app/inmuebles/subir-imagen', [InmuebleController::class, 'subirImagen'])->name('app.inmuebles.subirImagen');
-Route::get('/app/inmuebles/{inmueble}', [InmuebleController::class, 'getInmuebleById'])->name('app.inmuebles.show');
+Route::get('/app/inmuebles/{inmueble}', [InmuebleController::class, 'getInmuebleById'])->name('app.inmuebles.getInmuebleById');
 Route::get('/app/inmuebles/{inmueble}/galeria', [InmuebleController::class, 'getGaleriaImagenes'])->name('app.inmuebles.galeria');
 Route::get('/app/inmuebles/{inmueble}/galeria/first', [GaleriaInmuebleController::class, 'firstImage'])->name('app.inmuebles.galeria.first');
 Route::delete('/app/inmuebles/{inmueble}/galeria/{imagenId}', [GaleriaInmuebleController::class, 'destroy'])->name('app.inmuebles.galeria.destroy');
@@ -81,3 +81,7 @@ Route::put('/app/contratos/{contrato}/blockchain', [ContratoController::class, '
 Route::put('/app/contratos/{contrato}/pago', [ContratoController::class, 'updatePago'])->name('app.contratos.update.pago');
 Route::put('/app/contratos/{contrato}/cliente-aprobado', [ContratoController::class, 'updateClienteAprobado'])->name('app.contratos.update.cliente.aprobado');
 Route::put('/app/contratos/{contrato}/fecha-pago', [ContratoController::class, 'updateFechaPago'])->name('app.contratos.update.fecha.pago');
+
+//user
+Route::put('/app/users/{user}', [UserController::class, 'update'])->name('app.users.update');
+Route::get('/app/users/{user}', [UserController::class, 'show'])->name('app.users.show');

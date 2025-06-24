@@ -113,9 +113,13 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
-        //
+        try{
+            return ResponseService::success('Registro encontrado correctamente', $user);
+        }catch (\Exception $e){
+            return ResponseService::error('Error al mostrar el registro', $e->getMessage());
+        }
     }
 
     /**
@@ -124,7 +128,14 @@ class UserController extends Controller
     public function update(StoreUserRequest $request, User $user)
     {
         try {
-            $user->update($request->all());
+            $user->update([
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'usernick' => $request->input('usernick'),
+                'num_id' => $request->input('num_id'),
+                'telefono' => $request->input('telefono'),
+                'direccion' => $request->input('direccion'),
+            ]);
             return ResponseService::success('Registro actualizado correctamente', $user);
         } catch (\Exception $e) {
             return ResponseService::error('Error al actualizar el registro', $e->getMessage());
