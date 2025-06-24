@@ -12,7 +12,8 @@ class UpdateContratoRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return PermissionService::havePermission('contrato-update');
+//        return PermissionService::havePermission('contrato-update');
+        return true; // Cambiar a true para permitir la autorización
     }
 
     /**

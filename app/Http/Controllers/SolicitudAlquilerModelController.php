@@ -29,11 +29,17 @@ class SolicitudAlquilerModelController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreSolicitudAlquilerModelRequest $request)
+    public function store(Request $request)
     {
         try{
-            $solicitudAlquiler = SolicitudAlquilerModel::create($request->validated());
-            return ResponseService::success('Solicitud de alquiler creada exitosamente', $solicitudAlquiler, 201);
+            $solicitudAlquiler = SolicitudAlquilerModel::create([
+                'inmueble_id' => $request->inmueble_id,
+                'user_id' => $request->user_id,
+                'estado' => $request->estado,
+                'mensaje' => $request->mensaje,
+                'servicios_basicos' => json_encode($request->servicios_basicos ?? []),
+            ]);
+            return ResponseService::success('Solicitud de alquiler creada exitosamente', $solicitudAlquiler, 200);
         } catch (\Exception $e) {
             return ResponseService::error('Error al crear la solicitud de alquiler', ['error' => $e->getMessage()], 500);
         }

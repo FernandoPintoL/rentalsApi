@@ -116,6 +116,11 @@ class ContratoController extends Controller
      */
     public function show(Contrato $contrato)
     {
+        try{
+            return ResponseService::success('Registro encontrado', $contrato);
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al mostrar el registro', $e->getMessage());
+        }
     }
 
     /**
@@ -156,7 +161,7 @@ class ContratoController extends Controller
         }
     }
     // actualizar contrato cliente aprobado
-    public function updateContratoClienteAprobado(Request $request, Contrato $contrato)
+    public function updateClienteAprobado(Request $request, Contrato $contrato)
     {
         try {
             $contrato->update(['cliente_aprobado' => $request->cliente_aprobado]);
@@ -198,7 +203,7 @@ class ContratoController extends Controller
         }
     }
     // dame contrato por usuario
-    public function contratoPorUsuario($userId)
+    public function getContratosByClienteId($userId)
     {
         try {
             $contratos = $this->model::where('user_id', $userId)->get();
@@ -208,23 +213,13 @@ class ContratoController extends Controller
         }
     }
     // dame contrato por propietario
-    public function contratoPorPropietario($propietarioId)
+    public function getContratosByPropietarioId($propietarioId)
     {
         try {
             $contratos = $this->model::where('propietario_id', $propietarioId)->get();
             return ResponseService::success('Contratos obtenidos correctamente', $contratos);
         } catch (\Exception $e) {
             return ResponseService::error('Error al obtener los contratos', $e->getMessage());
-        }
-    }
-    // dame contrato por id
-    public function contratoPorId($contratoId)
-    {
-        try {
-            $contrato = $this->model::findOrFail($contratoId);
-            return ResponseService::success('Contrato obtenido correctamente', $contrato);
-        } catch (\Exception $e) {
-            return ResponseService::error('Error al obtener el contrato', $e->getMessage());
         }
     }
 }

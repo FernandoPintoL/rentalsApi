@@ -15,10 +15,32 @@
 #Accept: application/json
 #Content-Type: application/json
 
-POST http://192.168.100.21:8000/api/app/inmuebles/propietario
+#POST http://192.168.1.19:8000/api/app/solicitudes-alquiler/store
+#Accept: application/json
+#Content-Type: application/json
+#
+#{
+#    "id": 0,
+#    "inmueble_id": 2,
+#    "user_id": 2,
+#    "estado": "pendiente",
+#    "servicios_basicos":
+#    [
+#        {
+#            "id": 1,
+#            "nombre": "Agua",
+#            "descripcion": "Servicio de agua potable",
+#            "s_selected": true
+#        },
+#        {
+#            "id": 2,
+#            "nombre": "Luz",
+#            "descripcion": "Servicio de electricidad",
+#            "is_selected": true
+#        }
+#    ],
+#    "mensaje": "Solicitud inicial"
+#}
+GET http://192.168.1.19:8000/api/app/solicitudes-alquiler/cliente/2
 Accept: application/json
 Content-Type: application/json
-
-{
-    "propietario_id": "1"
-}

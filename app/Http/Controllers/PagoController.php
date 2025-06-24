@@ -116,7 +116,11 @@ class PagoController extends Controller
      */
     public function show(Pago $pago)
     {
-        //
+        try{
+            return ResponseService::success('Registro encontrado', $pago);
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al obtener el registro', $e->getMessage());
+        }
     }
 
     /**
@@ -157,6 +161,80 @@ class PagoController extends Controller
             return ResponseService::success('Registro eliminado correctamente');
         } catch (\Exception $e) {
             return ResponseService::error('Error al eliminar el registro', $e->getMessage());
+        }
+    }
+
+    public function getPagosContrato($contratoId)
+    {
+        try {
+            $pagos = Pago::where('contrato_id', $contratoId)->get();
+            return ResponseService::success('Pagos obtenidos correctamente', $pagos);
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al obtener los pagos', $e->getMessage());
+        }
+    }
+
+
+    public function getPagosContratoCliente($userId)
+    {
+        try {
+            $pagos = Pago::whereHas('contratos', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })->get();
+            return ResponseService::success('Pagos obtenidos correctamente', $pagos);
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al obtener los pagos', $e->getMessage());
+        }
+    }
+
+    public function getPagosPendientesCliente($userId)
+    {
+        try {
+            $pagos = Pago::whereHas('contratos', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })->where('estado', 'pendiente')->get();
+            return ResponseService::success('Pagos pendientes obtenidos correctamente', $pagos);
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al obtener los pagos pendientes', $e->getMessage());
+        }
+    }
+    public function getPagosCompletadosCliente($userId)
+    {
+        try {
+            $pagos = Pago::whereHas('contratos', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })->where('estado', 'aprobado')->get();
+            return ResponseService::success('Pagos completados obtenidos correctamente', $pagos);
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al obtener los pagos completados', $e->getMessage());
+        }
+    }
+    public function updateEstado(Request $request, Pago $pago)
+    {
+        try {
+            $estado = $request->input('estado');
+            if (!in_array($estado, ['pendiente', 'pagado', 'cancelado'])) {
+                return ResponseService::error('Estado no válido', '', 400);
+            }
+            $pago->estado = $estado;
+            $pago->save();
+            return ResponseService::success('Estado actualizado correctamente', $pago);
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al actualizar el estado', $e->getMessage());
+        }
+    }
+    public function updateBlockchain(Request $request, Pago $pago)
+    {
+        try {
+            $blockchainData = $request->input('blockchain_id');
+            if (empty($blockchainData)) {
+                return ResponseService::error('Datos de blockchain no válidos', '', 400);
+            }
+            $pago->blockchain_id = $blockchainData;
+            $pago->save();
+            return ResponseService::success('Datos de blockchain actualizados correctamente', $pago);
+        } catch (\Exception $e) {
+            return ResponseService::error('Error al actualizar los datos de blockchain', $e->getMessage());
         }
     }
 }

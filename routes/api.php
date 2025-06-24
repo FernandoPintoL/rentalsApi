@@ -33,11 +33,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Ruta pública de ejemplo
-Route::get('/saludo', function () {
-    return ['mensaje' => '¡Hola desde la API!'];
-});
-
 Route::post('/app/galeria-inmueble/upload', [GaleriaInmuebleController::class, 'upload'])->name('app.galeria.inmueble.upload');
 Route::post('/app/login', [AuthenticatedController::class, 'store'])->name('app.login');
 Route::post('/app/logout', [AuthenticatedController::class, 'destroy'])->name('app.logout');
@@ -47,35 +42,42 @@ foreach ($controllers as $key => $controller) {
     Route::post("/app/$key/query", [$controller, 'query'])->name("app.$key.query");
     Route::put("/app/$key/update", [$controller, 'update'])->name("app.$key.update");
 }
-//Route::put('/app/inmuebles/{inmueble}', [InmuebleController::class, 'update'])->name('app.inmuebles.update');
+
+// Ruta inmuebles dispositivos
 Route::prefix('/app/inmuebles/{inmueble}')->group(function () {
-    // Asignar dispositivo a inmueble (POST)
     Route::post('/dispositivos', [InmuebleDeviceController::class, 'store'])->name('inmueble.device.store');
-    // Listar dispositivos de un inmueble (GET)
     Route::get('/dispositivos', [InmuebleDeviceController::class, 'index'])->name('inmueble.device.index');
-    // Enviar comando a dispositivo (POST)
     Route::post('/control-dispositivo', [InmuebleDeviceController::class, 'controlDevice'])->name('inmueble.device.control');
 });
 
-// Ruta solicitudes por cliente
-Route::get('/app/solicitudes-alquiler/cliente/{clienteId}', [SolicitudAlquilerModelController::class, 'solicitudesPorUsuario'])->name('app.solicitudes-alquiler.solicitudesPorUsuario');
-// Ruta solicitudes por propietario
-Route::get('/app/solicitudes-alquiler/propietario/{propietarioId}', [SolicitudAlquilerModelController::class, 'solicitudesPorPropietario'])->name('app.solicitudes-alquiler.solicitudesPorPropietario');
-// Ruta solicitudes de usuario por estado
-Route::get('/app/solicitudes-alquiler/user/{userId}/estado/{estado}', [SolicitudAlquilerModelController::class, 'solicitudesPorUsuarioYEstado'])->name('app.solicitudes-alquiler.solicitudesPorUsuarioYEstado');
-// Ruta actualizar estado de solicitud
-Route::put('/app/solicitudes-alquiler/{solicitudAlquilerModel}/estado', [SolicitudAlquilerModelController::class, 'updateEstado'])->name('app.solicitudes-alquiler.updateEstado');
-
 // Ruta inmuebles por propietario
 Route::post('/app/inmuebles/propietario', [InmuebleController::class, 'getInmueblesByPropietario'])->name('app.inmuebles.inmueblesPorPropietario');
-// Ruta inmuebles por id
-// Ruta subir imagen del inmueble
 Route::post('/app/inmuebles/subir-imagen', [InmuebleController::class, 'subirImagen'])->name('app.inmuebles.subirImagen');
 Route::get('/app/inmuebles/{inmueble}', [InmuebleController::class, 'getInmuebleById'])->name('app.inmuebles.show');
-// Ruta galeria de imagenes del inmueble
 Route::get('/app/inmuebles/{inmueble}/galeria', [InmuebleController::class, 'getGaleriaImagenes'])->name('app.inmuebles.galeria');
-Route::get('app/inmuebles/{inmueble}/galeria/first', [GaleriaInmuebleController::class, 'firstImage'])->name('app.inmuebles.galeria.first');
-// Ruta para eliminar una imagen del inmueble
+Route::get('/app/inmuebles/{inmueble}/galeria/first', [GaleriaInmuebleController::class, 'firstImage'])->name('app.inmuebles.galeria.first');
 Route::delete('/app/inmuebles/{inmueble}/galeria/{imagenId}', [GaleriaInmuebleController::class, 'destroy'])->name('app.inmuebles.galeria.destroy');
-// Eliminar inmueble
 Route::delete('/app/inmuebles/{inmueble}', [InmuebleController::class, 'destroy'])->name('app.inmuebles.destroy');
+
+// Ruta solicitudes por cliente
+Route::get('/app/solicitudes-alquiler/cliente/{clienteId}', [SolicitudAlquilerModelController::class, 'solicitudesPorClienteId'])->name('app.solicitudes-alquiler.solicitudesPorClienteId');
+Route::get('/app/solicitudes-alquiler/propietario/{propietarioId}', [SolicitudAlquilerModelController::class, 'solicitudesPorPropietario'])->name('app.solicitudes-alquiler.solicitudesPorPropietario');
+Route::put('/app/solicitudes-alquiler/{solicitudAlquilerModel}/estado', [SolicitudAlquilerModelController::class, 'updateEstado'])->name('app.solicitudes-alquiler.updateEstado');
+
+//Pagos
+Route::get('/app/pagos/contrato/{contratoId}', [PagoController::class, 'getPagosContrato'])->name('app.pagos.contrato');
+Route::get('/app/pagos/cliente/{userId}', [PagoController::class, 'getPagosContratoCliente'])->name('app.pagos.contrato.cliente');
+Route::get('/app/pagos/pendientes/cliente/{userId}', [PagoController::class, 'getPagosPendientesCliente'])->name('app.pagos.pendientes.cliente');
+Route::get('/app/pagos/completados/cliente/{userId}', [PagoController::class, 'getPagosCompletadosCliente'])->name('app.pagos.completados.cliente');
+Route::put('/app/pagos/{pago}/estado', [PagoController::class, 'updateEstado'])->name('app.pagos.update.estado');
+Route::put('/app/pagos/{pago}/blockchain', [PagoController::class, 'updateBlockchain'])->name('app.pagos.update.blockchain');
+
+//contratos
+Route::get('/app/contratos/{contrato}', [ContratoController::class, 'show'])->name('app.contratos.show');
+Route::get('/app/contratos/cliente/{userId}', [ContratoController::class, 'getContratosByClienteId'])->name('app.contratos.cliente');
+Route::get('/app/contratos/propietario/{userId}', [ContratoController::class, 'getContratosByPropietarioId'])->name('app.contratos.propietario');
+Route::put('/app/contratos/{contrato}/estado', [ContratoController::class, 'updateEstado'])->name('app.contratos.update.estado');
+Route::put('/app/contratos/{contrato}/blockchain', [ContratoController::class, 'updateBlockchain'])->name('app.contratos.update.blockchain');
+Route::put('/app/contratos/{contrato}/pago', [ContratoController::class, 'updatePago'])->name('app.contratos.update.pago');
+Route::put('/app/contratos/{contrato}/cliente-aprobado', [ContratoController::class, 'updateClienteAprobado'])->name('app.contratos.update.cliente.aprobado');
+Route::put('/app/contratos/{contrato}/fecha-pago', [ContratoController::class, 'updateFechaPago'])->name('app.contratos.update.fecha.pago');

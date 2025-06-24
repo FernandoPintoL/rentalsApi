@@ -12,7 +12,6 @@ class Pago extends Model
     protected $table = "pagos";
     protected $primaryKey = "id";
     protected $fillable = [
-        'id',
         'contrato_id',
         'blockchain_id',
         'fecha_pago',
@@ -22,8 +21,8 @@ class Pago extends Model
         'created_at',
         'updated_at'
     ];
-    public function contrato()
+    public function contratos()
     {
-        return $this->belongsTo(Contrato::class, 'contrato_id', 'id');
+        return $this->belongsTo(Contrato::class, 'contrato_id');
     }
 }

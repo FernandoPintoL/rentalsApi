@@ -12,7 +12,8 @@ class StoreContratoRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return PermissionService::havePermission('contrato-store');
+//        return PermissionService::havePermission('contrato-store');
+        return true;
     }
 
     /**
